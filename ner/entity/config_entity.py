@@ -45,3 +45,20 @@ class DataTransformationConfig:
         self.unique_labels_path: str = os.path.join(
             self.data_transformation_artifacts_dir, UNIQUE_LABELS_FILE_NAME
         )
+
+
+@dataclass
+class ModelTrainingConfig:
+    def __init__(self):
+        self.model_training_artifacts_dir: str = os.path.join(
+            ARTIFACTS_DIR, MODEL_TRAINING_ARTIFACTS_DIR
+        )
+        self.bert_model_instance_path: str = os.path.join(
+            self.model_training_artifacts_dir, AWS_MODEL_NAME
+        )
+        self.tokenizer_file_path: str = os.path.join(
+            self.model_training_artifacts_dir, TOKENIZER_FILE_NAME
+        )
+        self.tokenizer_file_aws_path: str = os.path.join(
+            self.model_training_artifacts_dir
+        )
