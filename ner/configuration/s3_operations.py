@@ -5,6 +5,7 @@ from typing import List, Union
 from ner.constants import *
 import boto3
 import pickle
+import botocore
 from ner.exception import NerException
 from botocore.exceptions import ClientError
 from mypy_boto3_s3.service_resource import Bucket
@@ -20,8 +21,18 @@ class S3Operation:
 
     
     def download_object(self,key, bucket_name, filename):
-        bucket = self.s3_resource.Bucket(bucket_name)
-        bucket.download_file(Key = key, Filename = filename)
+        try:
+            bucket = self.s3_resource.Bucket(bucket_name)
+            # Attempt to download the file
+            bucket.download_file(Key=key, Filename=filename)
+            logging.info(f"Downloaded file {key} from S3 bucket {bucket_name} to {filename}")
+        except botocore.exceptions.ClientError as e:
+            # If the file is not found in S3 (404 error)
+            if e.response['Error']['Code'] == '404':
+                logging.info(f"File {key} not found in bucket {bucket_name}. Proceeding without download.")
+            else:
+                # Re-raise the exception if it's a different error
+                raise
 
 
     @staticmethod

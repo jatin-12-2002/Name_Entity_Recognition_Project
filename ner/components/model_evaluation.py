@@ -109,10 +109,10 @@ class ModelEvaluation:
             logging.info(f"The accuracy on test dataset is - {trained_model_accuracy}")
 
             # Loading model from AWS S3 container registry
-            self.awscloud.load_model(
+            self.awscloud.download_object(
                 bucket_name=BUCKET_NAME,
-                model_name=AWS_MODEL_NAME,
-                destination=self.model_evaluation_config.aws_model_path,
+                key=AWS_MODEL_NAME,
+                filename=self.model_evaluation_config.aws_model_path,
             )
 
             # Checking whether data file exists in the artifacts directory or not
