@@ -256,6 +256,7 @@ class ModelTraining:
                 bucket_name=BUCKET_NAME,
                 from_filename=self.model_trainer_config.tokenizer_file_path,
                 to_filename=TOKENIZER_FILE_NAME,
+                remove=False
             )
             logging.info(
                 f"Uploaded pickle file to the AWS S3 Cloud storage. File name - {os.path.basename(self.model_trainer_config.tokenizer_file_path)}"
