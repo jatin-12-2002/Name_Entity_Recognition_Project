@@ -6,7 +6,7 @@ jobs:
   continuous-integration:
     docker:
       - image: cimg/base:stable
-    resource_class: jatin/nerrunner
+    resource_class: medium
     steps:
       - setup_remote_docker:
           docker_layer_caching: true
@@ -25,26 +25,24 @@ jobs:
 
   continuous-delivery:
     machine: true
-    resource_class: jatin/nerrunner
+    resource_class: bappy/haterunner
     steps:
       - aws-cli/setup
-      
+
       - run:
           name: auth to aws ecr
-          command: |
-            aws ecr get-login-password --region us-east-1 | \
-            sudo docker login --username AWS --password-stdin 022499021177.dkr.ecr.us-east-1.amazonaws.com
+          command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 022499021177.dkr.ecr.us-east-1.amazonaws.com
           
           
 
       - run:
           name: pull image from private repository
-          command: sudo docker pull 022499021177.dkr.ecr.us-east-1.amazonaws.com/nerdemo:latest
+          command: docker pull 022499021177.dkr.ecr.us-east-1.amazonaws.com/demo:latest
           
       
       - run:
           name: run image
-          command: sudo docker run -d -p 8080:8080 022499021177.dkr.ecr.us-east-1.amazonaws.com/nerdemo:latest
+          command: docker run -d -p 8080:8080 022499021177.dkr.ecr.us-east-1.amazonaws.com/demo:latest
 workflows:
   CICD:
     jobs:
