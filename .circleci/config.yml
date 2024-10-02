@@ -25,7 +25,7 @@ jobs:
 
   continuous-delivery:
     machine: true
-    resource_class: bappy/haterunner
+    resource_class: jatin/nerrunner
     steps:
       - aws-cli/setup
 
