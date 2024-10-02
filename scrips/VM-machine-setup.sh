@@ -1,27 +1,29 @@
-#update system
-sudo apt update
+# Setup Docker and update system
 sudo apt-get update
 sudo apt-get upgrade -y
-
-# Setup Docker
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
-sudo usermod -aG docker icloud
+
+
+
+# Add cloud user to docker group
+sudo usermod -aG docker ubuntu
+sudo usermod -aG docker $USER
 newgrp docker
 
 
-# Setup Google Cloud
-curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-409.0.0-linux-x86_64.tar.gz
-tar -xf google-cloud-cli-409.0.0-linux-x86_64.tar.gz
-./google-cloud-sdk/install.sh --path-update true
 
-
-
+# Start configuration of self-hosted machine
 # Download the launch agent binary and verify the checksum
 mkdir configurations
 cd configurations
 curl https://raw.githubusercontent.com/CircleCI-Public/runner-installation-files/main/download-launch-agent.sh > download-launch-agent.sh
 export platform=linux/amd64 && sh ./download-launch-agent.sh
+
 
 
 # Create the circleci user & working directory
@@ -34,31 +36,33 @@ sudo chown -R circleci /var/opt/circleci /opt/circleci/circleci-launch-agent
 
 # Create a CircleCI runner configuration
 sudo mkdir -p /etc/opt/circleci
+sudo touch /etc/opt/circleci/launch-agent-config.yaml
 sudo nano /etc/opt/circleci/launch-agent-config.yaml
+
 
 
 # Add API in the file and change permissions
 api:
-    auth_token: fe1934e387e8da6bc6e1b7370e2b543e71adcdcb36ae5df015ddfba702654bfcd9d31078e3fbbfd2
+  auth_token: 79a844980352cbbc4796629d29d08d2999ad402966e09f28a44ff5539c661486960511369f1d0345
 
 runner:
-    name: self-hosted
-    working_directory: /var/opt/circleci/workdir
-    cleanup_working_directory: true
+  name: self-hosted
+  working_directory: /var/opt/circleci/workdir
+  cleanup_working_directory: true
 
 
 
-###########
 sudo chown circleci: /etc/opt/circleci/launch-agent-config.yaml
 sudo chmod 600 /etc/opt/circleci/launch-agent-config.yaml
 
 
-
 # Enable the systemd unit
+sudo touch /usr/lib/systemd/system/circleci.service
 sudo nano /usr/lib/systemd/system/circleci.service
 
-#Put Content in the circleci.service
 
+
+# Put Content in the circleci.service
 [Unit]
 Description=CircleCI Runner
 After=network.target
@@ -72,17 +76,45 @@ TimeoutStopSec=18300
 WantedBy = multi-user.target
 
 
-##############
+
+
+
 sudo chown root: /usr/lib/systemd/system/circleci.service
 sudo chmod 644 /usr/lib/systemd/system/circleci.service
-sudo usermod -aG docker circleci
-newgrp docker
+
+
 
 
 # Start CircleCI
 sudo systemctl enable circleci.service
 sudo systemctl start circleci.service
-sudo systemctl restart circleci.service
+
+
+
+
+## Add circleci to sudo group
+sudo usermod -aG docker circleci
+sudo usermod -a -G docker circleci
+newgrp docker
+
+
 sudo systemctl status circleci.service
 
-## Now stop and start the VM
+
+
+## Install AWS CLI
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
+
+
+
+
+# add them inside environment variables
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_REGION
+AWS_ECR_REGISTRY_ID
