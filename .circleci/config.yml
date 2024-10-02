@@ -30,8 +30,14 @@ jobs:
       - aws-cli/setup
 
       - run:
+          name: Ensure Docker is running
+          command: sudo systemctl start docker
+      
+      - run:
           name: auth to aws ecr
-          command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 022499021177.dkr.ecr.us-east-1.amazonaws.com
+          command: |
+            aws ecr get-login-password --region us-east-1 | \
+            sudo docker login --username AWS --password-stdin 022499021177.dkr.ecr.us-east-1.amazonaws.com
           
           
 
