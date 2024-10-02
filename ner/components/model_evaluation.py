@@ -112,7 +112,7 @@ class ModelEvaluation:
             self.awscloud.download_object(
                 bucket_name=BUCKET_NAME,
                 key=AWS_MODEL_NAME,
-                filename=self.model_evaluation_config.aws_model_path,
+                filename=os.path.join(self.model_evaluation_config.aws_model_path,AWS_MODEL_NAME)
             )
 
             # Checking whether data file exists in the artifacts directory or not

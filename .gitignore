@@ -167,3 +167,4 @@ ids_to_labels.pkl
 tokenizer.pkl
 best_model/model.pt
 .circleci/config.yaml
+model.pt
