@@ -20,7 +20,7 @@ jobs:
           push-image: true
           region: '${AWS_REGION}'
           repo: demo
-          registry-id: '${AWS_ECR_REGISTRY_ID}'
+          registry-id: AWS_ECR_REGISTRY_ID
           repo-scan-on-push: true
           tag: latest
 
@@ -29,7 +29,7 @@ jobs:
     resource_class: jatin/nerrunner
     steps:
       - aws-cli/setup
-
+      
       - run:
           name: Start Docker Service
           command: |
@@ -37,16 +37,18 @@ jobs:
 
       - run:
           name: auth to aws ecr
-          command: aws ecr get-login-password --region ${AWS_REGION} | sudo docker login --username AWS --password-stdin 022499021177.dkr.ecr.${AWS_REGION}.amazonaws.com
+          command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 022499021177.dkr.ecr.us-east-1.amazonaws.com
+          
+          
 
       - run:
           name: pull image from private repository
-          command: sudo docker pull 022499021177.dkr.ecr.${AWS_REGION}.amazonaws.com/demo:latest
-
+          command: sudo docker pull 022499021177.dkr.ecr.us-east-1.amazonaws.com/demo:latest
+          
+      
       - run:
           name: run image
-          command: sudo docker run -d -p 8080:8080 022499021177.dkr.ecr.${AWS_REGION}.amazonaws.com/demo:latest
-
+          command: sudo docker run -d -p 8080:8080 022499021177.dkr.ecr.us-east-1.amazonaws.com/demo:latest
 workflows:
   CICD:
     jobs:
