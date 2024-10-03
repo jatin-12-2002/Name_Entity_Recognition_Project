@@ -22,3 +22,16 @@ To ensure streamlined development and deployment, the project incorporates a CI/
 3) GitHub
 4) CircleCI (CI/CD)
 
+## System Design
+![image](./assets/SystemDesign.jpg)
+
+## Dataset
+
+The dataset used in this project consists of labeled text for Named Entity Recognition (NER), where each word in the text is tagged with its corresponding entity label. The dataset follows the typical NER format with tokens and corresponding labels for various entity types such as Person (PER), Organization (ORG), and Location (LOC).
+
+* Source: The dataset can either be a publicly available NER dataset like CoNLL-2003 or a custom dataset tailored for specific entity recognition tasks.
+* Format: Each sentence in the dataset is split into individual tokens, and each token is assigned a label such as B-PER, I-LOC, etc., using the BIO (Beginning, Inside, Outside) tagging scheme.
+* Preprocessing: The text is tokenized using BERT’s tokenizer to align the tokens with the labels for efficient model input.
+
+You can either download an existing dataset or use your custom data by formatting it to match the token-label format required for NER tasks. Here is the Dataset [Link](data/ner.csv)
+
