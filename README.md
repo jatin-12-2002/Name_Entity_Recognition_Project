@@ -64,7 +64,7 @@ The Code is written in Python 3.8.19. If you don't have Python installed you can
 
 ### Step 1: Clone the repository
 ```bash
-git clone https://github.com/jcole313/NER
+git clone https://github.com/jatin-12-2002/Name_Entity_Recognition_Project
 ```
 ### Step 2- Create a conda environment after opening the repository
 ```bash
