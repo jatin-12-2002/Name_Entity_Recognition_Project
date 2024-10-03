@@ -110,11 +110,25 @@ sudo ./aws/install
 sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 
 
+## Congifure your AWS Credentials
+aws configure
+
+AWS_SECRET_ACCESS_KEY = ""
+AWS_ACCESS_KEY_ID = ""
+AWS_REGION = "us-east-1"
+AWS_FOLDER = Press Enter and move on
 
 
 
-# add them inside environment variables
+## add them inside environment variables of your CircleCI Project
+
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 AWS_REGION
 AWS_ECR_REGISTRY_ID
+
+## Change these lines in .circleci/config.yml
+
+Line 28: Replace the resource_class with your resource_class name in your CircleCI Self-hosted runner
+
+Line 34, 40, 45: Replace this "022499021177.dkr.ecr.us-east-1.amazonaws.com" with your given ECR Repo ID
